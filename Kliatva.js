@@ -5,8 +5,6 @@ class Kliatva {
     this.resolveQueue = [];
     this.rejectQueue = [];
 
-    console.log("created new Kliatva!");
-
     this.mainCallback(
       (r) => this.doResolve(r),
       (r) => this.doReject(r)
@@ -14,6 +12,9 @@ class Kliatva {
   }
 
   then(onResolve, onReject) {
+    if (typeof onResolve !== "function") onResolve = (value) => value;
+    if (typeof onReject !== "function") onReject = (value) => value;
+
     return new Kliatva((resolve, reject) => {
       const makeFulfill = (value) => {
         try {
@@ -23,11 +24,19 @@ class Kliatva {
         }
       };
       const makeFail = (error) => {
-        reject(onReject(error));
+        try {
+          reject(onReject(error));
+        } catch (e) {
+          reject(e);
+        }
       };
       this.resolveQueue.push(makeFulfill);
       this.rejectQueue.push(makeFail);
     });
+  }
+
+  catch(onReject) {
+    this.then(undefined, onReject);
   }
 
   doResolve(value) {
@@ -38,15 +47,15 @@ class Kliatva {
         fn(value);
       });
     };
-    setTimeout(() => {
-      console.log("delayed");
-      runResolve();
-    });
+    setTimeout(runResolve);
   }
 
   doReject(value) {
-    this.status = this.REJECTED;
-    this.callbacks.onReject(value);
+    const doReject = () => {
+      this.status = this.REJECTED;
+      this.rejectQueue.forEach((fn) => fn(value));
+    };
+    setTimeout(doReject);
   }
 
   finally(callback) {
@@ -60,30 +69,27 @@ class Kliatva {
   }
 
   static resolve(value) {
-    // console.log("Trying to resolve " + value);
-    // if (value instanceof Promise) return value;
-    return new Kliatva((rs, rj) => {
-      // console.log("inside kliatva!");
-      rs(value);
-    });
+    return value instanceof Kliatva
+      ? value
+      : new Kliatva((resolve) => resolve(value));
   }
 
-  // static reject(reason) {
-  //   return new Kliatva((resolve, reject) => reject(reason));
-  // }
+  static reject(reason) {
+    return new Kliatva((resolve, reject) => reject(reason));
+  }
 
-  static all(promiseArr) {
-    let index = 0;
-    let result = [];
+  static all(kliatvasArray) {
+    let kliatvasAlreadyResolved = 0;
+    const result = [];
+    const klitvasToResolve = kliatvasArray.length;
+
     return new Kliatva((resolve, reject) => {
-      promiseArr.forEach((p, i) => {
-        Pormise.resolve(p).then(
+      kliatvasArray.forEach((kliatva, index) => {
+        Kliatva.resolve(kliatva).then(
           (val) => {
-            index++;
-            result[i] = val;
-            if (index === promiseArr.length) {
-              resolve(result);
-            }
+            kliatvasAlreadyResolved++;
+            result[index] = val;
+            if (kliatvasAlreadyResolved === klitvasToResolve) resolve(result);
           },
           (err) => {
             reject(err);
@@ -93,16 +99,23 @@ class Kliatva {
     });
   }
 
-  // static race(promiseArr) {
-  //   return new Pormise((resolve, reject) => {
-  //     for (let p of promiseArr) {
-  //       Kliatva.resolve(p).then(
-  //         (value) => resolve(value),
-  //         (err) => reject(err)
-  //       );
-  //     }
-  //   });
-  // }
+  static race(kliatvasArray) {
+    let weHaveWinner = false;
+    return new Kliatva((resolveFirst, rejectFirst) => {
+      for (let p of kliatvasArray) {
+        Kliatva.resolve(p).then(
+          (value) => {
+            if (!weHaveWinner) resolveFirst(value);
+            weHaveWinner = true;
+          },
+          (err) => {
+            if (!weHaveWinner) rejectFirst(err);
+            weHaveWinner = true;
+          }
+        );
+      }
+    });
+  }
 }
 
 Kliatva.prototype.PENDING = "pending";
@@ -111,28 +124,21 @@ Kliatva.prototype.REJECTED = "rejected";
 
 //----
 
-// const test1 = new Promise((s, j) => setTimeout(() => s("Promise!"), 2000));
-// const test2 = new Kliatva((s, j) => setTimeout(() => s("Kliatva!"), 1000));
-// const test1 = Promise.resolve("Resolved Promise!");
-const test2 = Kliatva.resolve("Resolved Kliatva!");
-// const test3 = new Kliatva((rs, rj) => rs("Hand resolved"));
-// Kliatva.something("test text");
+const prom = [
+  new Promise((rs, rj) => setTimeout(() => rs("P1"), 500)),
+  new Promise((rs, rj) => setTimeout(() => rs("P2"), 1000)),
+  new Promise((rs, rj) => setTimeout(() => rj("P3 e"), 1500)),
+];
 
-// test1
-//   .then((resp) => {
-//     console.log(resp);
-//     return "After Promise!";
-//   })
-//   .then((r) => console.log(r));
-test2
-  .then((resp) => {
-    console.log(resp);
-    return "After Kliatva";
-  })
-  .then((r) => console.log(r));
-// test3
-//   .then((resp) => {
-//     console.log(resp);
-//     return "After Kliatva(2)";
-//   })
-//   .then((r) => console.log(r));
+const klia = [
+  new Kliatva((rs, rj) => setTimeout(() => rs("K1"), 2000)),
+  new Kliatva((rs, rj) => setTimeout(() => rs("K2"), 2500)),
+  new Kliatva((rs, rj) => setTimeout(() => rj("K3 e"), 3000)),
+];
+
+Promise.race(prom)
+  .then((r) => console.log(r))
+  .catch((e) => console.log(e));
+Kliatva.race(klia)
+  .then((r) => console.log(r))
+  .catch((e) => console.log(e));

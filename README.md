@@ -5,7 +5,7 @@
 
 ## Files
 
-1. `Kliatva` - implementation of JS Promise.
+1. `Kliatva.js` - implementation of JS Promise.
 2. `async_generator.js` - implementation of _async/await_ with generator.
 
 Also explore other branches if it exist.

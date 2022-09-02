@@ -80,6 +80,7 @@ class Kliatva {
 
   static all(kliatvasArray) {
     let kliatvasAlreadyResolved = 0;
+    let kliatvasAlreadyRejected = 0;
     const result = [];
     const klitvasToResolve = kliatvasArray.length;
 
@@ -89,10 +90,15 @@ class Kliatva {
           (val) => {
             kliatvasAlreadyResolved++;
             result[index] = val;
-            if (kliatvasAlreadyResolved === klitvasToResolve) resolve(result);
+            if (
+              kliatvasAlreadyResolved === klitvasToResolve &&
+              !kliatvasAlreadyRejected
+            )
+              resolve(result);
           },
           (err) => {
             reject(err);
+            kliatvasAlreadyRejected++;
           }
         );
       });
@@ -116,29 +122,57 @@ class Kliatva {
       }
     });
   }
+
+  static allSettled(kliatvasArray) {
+    let kliatvasAlreadyDone = 0;
+    const result = [];
+    const klitvasToWork = kliatvasArray.length;
+
+    const addValue = (val, index) =>
+      (result[index] = { status: "fulfilled", value: val });
+    const addReason = (res, index) =>
+      (result[index] = { status: "rejected", reason: res });
+
+    return new Kliatva((resolve, reject) => {
+      kliatvasArray.forEach((kliatva, index) => {
+        Kliatva.resolve(kliatva).then(
+          (val) => {
+            kliatvasAlreadyDone++;
+            addValue(val, index);
+            if (kliatvasAlreadyDone === klitvasToWork) resolve(result);
+          },
+          (err) => {
+            kliatvasAlreadyDone++;
+            addReason(err, index);
+            if (kliatvasAlreadyDone === klitvasToWork) resolve(result);
+          }
+        );
+      });
+    });
+  }
 }
 
-Kliatva.prototype.PENDING = "pending";
-Kliatva.prototype.FULFILLED = "fulfilled";
-Kliatva.prototype.REJECTED = "rejected";
+// Kliatva.prototype.PENDING = "pending";
+// Kliatva.prototype.FULFILLED = "fulfilled";
+// Kliatva.prototype.REJECTED = "rejected";
 
-//----
+// //----
 
-const prom = [
-  new Promise((rs, rj) => setTimeout(() => rs("P1"), 500)),
-  new Promise((rs, rj) => setTimeout(() => rs("P2"), 1000)),
-  new Promise((rs, rj) => setTimeout(() => rj("P3 e"), 1500)),
-];
+// const prom = [
+//   new Promise((rs, rj) => setTimeout(() => rs("P1"), 500)),
+//   new Promise((rs, rj) => setTimeout(() => rs("P2"), 1000)),
+//   new Promise((rs, rj) => setTimeout(() => rj("P3 e"), 1500)),
+// ];
 
-const klia = [
-  new Kliatva((rs, rj) => setTimeout(() => rs("K1"), 2000)),
-  new Kliatva((rs, rj) => setTimeout(() => rs("K2"), 2500)),
-  new Kliatva((rs, rj) => setTimeout(() => rj("K3 e"), 3000)),
-];
+// const klia = [
+//   new Kliatva((rs, rj) => setTimeout(() => rs("K1"), 2000)),
+//   new Kliatva((rs, rj) => setTimeout(() => rs("K2"), 2500)),
+//   new Kliatva((rs, rj) => setTimeout(() => rj("K3 e"), 3000)),
+// ];
 
-Promise.race(prom)
-  .then((r) => console.log(r))
-  .catch((e) => console.log(e));
-Kliatva.race(klia)
-  .then((r) => console.log(r))
-  .catch((e) => console.log(e));
+// Promise.allSettled(prom)
+//   .then((r) => console.log(r))
+//   .catch((e) => console.log(e));
+// Kliatva.allSettled(klia)
+//   .then((r) => console.log(r))
+//   .catch((e) => console.log(e));

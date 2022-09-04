@@ -151,28 +151,3 @@ class Kliatva {
     });
   }
 }
-
-// Kliatva.prototype.PENDING = "pending";
-// Kliatva.prototype.FULFILLED = "fulfilled";
-// Kliatva.prototype.REJECTED = "rejected";
-
-// //----
-
-// const prom = [
-//   new Promise((rs, rj) => setTimeout(() => rs("P1"), 500)),
-//   new Promise((rs, rj) => setTimeout(() => rs("P2"), 1000)),
-//   new Promise((rs, rj) => setTimeout(() => rj("P3 e"), 1500)),
-// ];
-
-// const klia = [
-//   new Kliatva((rs, rj) => setTimeout(() => rs("K1"), 2000)),
-//   new Kliatva((rs, rj) => setTimeout(() => rs("K2"), 2500)),
-//   new Kliatva((rs, rj) => setTimeout(() => rj("K3 e"), 3000)),
-// ];
-
-// Promise.allSettled(prom)
-//   .then((r) => console.log(r))
-//   .catch((e) => console.log(e));
-// Kliatva.allSettled(klia)
-//   .then((r) => console.log(r))
-//   .catch((e) => console.log(e));

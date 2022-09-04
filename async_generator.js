@@ -7,14 +7,16 @@ function* myGenerator() {
 
 function doAsyncThings() {
   const fetchGenerator = myGenerator();
+  const result = [];
 
-  step = () => {
+  const step = () => {
     const promise = fetchGenerator.next();
-    if (promise.done) return results;
+    if (promise.done) return;
     promise.value
       .then((r) => r.json())
       .then((r) => {
         console.log(r);
+        result.push(r);
         step();
       });
   };

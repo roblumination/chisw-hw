@@ -2,6 +2,11 @@
 
 $accent: #ec6e4c;
 
+:root {
+  --weather-widget-windspeed-x: 100px;
+  --weather-widget-windspeed-y: 100px;
+}
+
 .ww {
   width: 400px;
   height: 200px;
@@ -10,6 +15,7 @@ $accent: #ec6e4c;
 
   display: flex;
   font-family: Manrope;
+  position: relative;
   font-size: 16px;
   overflow: hidden;
   color: #49484a;
@@ -21,6 +27,21 @@ $accent: #ec6e4c;
   background-color: #fff;
   outline: 1px solid #aaa;
   box-shadow: 0 0 5px #0003, 0 5px 10px #0003;
+
+  &__loader {
+    position: absolute;
+    transition: opacity 0.5s;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    background-color: rgba($accent, 70%);
+    // opacity: 0;
+    z-index: 2000;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   &__section {
     // flex-grow: 1;
@@ -98,19 +119,13 @@ $accent: #ec6e4c;
         display: flex;
         align-items: center;
         justify-content: center;
-        // box-shadow: inset 0 2px 5px #0003;
-        // border-top: 1px solid #ccc;
-        // border-left: 1px solid #ccc;
-        // mask-image: linear-gradient(rgba(0, 0, 0, 1), transparent);
-        // -webkit-mask: linear-gradient(0, #000 0% 80%, transparent 100%);
-        // background-position: center;
-        //
 
         &__cloud {
           position: absolute;
           width: 100%;
           height: 100%;
           z-index: 0;
+          // filter: drop-shadow(0 0 2px #8883);
 
           &1 {
             background: url("./ww/clouds_L.svg");
@@ -120,6 +135,16 @@ $accent: #ec6e4c;
           &2 {
             background: url("./ww/clouds_D.svg");
             animation: clouds-move 100s infinite linear;
+          }
+
+          &M {
+            background: url("./ww/clouds_M.svg");
+            animation: clouds-move 85s infinite linear;
+          }
+
+          &T {
+            background: url("./ww/clouds_T.svg");
+            animation: clouds-move 60s infinite linear;
           }
         }
 
@@ -136,6 +161,7 @@ $accent: #ec6e4c;
             // background-color: #f00;
             z-index: 1500;
             transform: rotate(-45deg);
+            transition: transform 0.5s;
 
             background: url("./ww/arrow.svg");
           }
@@ -172,6 +198,7 @@ $accent: #ec6e4c;
     background-position: 0% 0%;
   }
   100% {
-    background-position: 1000px 950px;
+    background-position: var(--weather-widget-windspeed-x)
+      var(--weather-widget-windspeed-y);
   }
 }

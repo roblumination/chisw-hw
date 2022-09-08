@@ -16,15 +16,8 @@ body {
   // background-color: #fff;
 }
 
-@keyframes fade-in {
-  0% {
-    transform: translateY(-100px) rotate3d(1, 0, 0, 45deg);
-    opacity: 0;
-    // box-shadow: 0 0px 0px #0003, 0 0 0px #0002;
-  }
-  100% {
-    transform: translateY(0px) rotate3d(1, 0, 0, 0deg);
-    opacity: 1;
-    // box-shadow: 0 5px 5px #0003, 0 0 5px #0002;
-  }
+.super-buttons {
+  // background-color: #f00;
+  // width: 100px;
+  // height: 100px;
 }

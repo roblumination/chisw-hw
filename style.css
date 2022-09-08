@@ -14,14 +14,3 @@ body {
   gap: 10px;
   perspective: 500px;
 }
-
-@keyframes fade-in {
-  0% {
-    transform: translateY(-100px) rotate3d(1, 0, 0, 45deg);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0px) rotate3d(1, 0, 0, 0deg);
-    opacity: 1;
-  }
-}

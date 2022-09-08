@@ -97,7 +97,7 @@ class WeatherWidgetLayout {
     setVal("tempFeelsLike", Math.round(data.main.feels_like));
     setVal("cityName", data.name);
     this.setWind(data.wind.deg, data.wind.speed);
-    // this.setIco();
+    this.setIco(data.weather[0].icon);
     const windSpeed =
       data.wind.speed > 1
         ? Math.round(data.wind.speed)
@@ -145,6 +145,7 @@ class WeatherWidgetConnector {
       apiKey: "4322a85eea73487e8dcc8898fada9876",
       coord: [50.4333, 30.5167],
       lang: "ua",
+      city: null,
     };
   }
 
@@ -160,10 +161,15 @@ class WeatherWidgetConnector {
   }
 
   updateLocation(position) {
+    if (this.queryParam.city) delete this.queryParam.city;
     this.queryParam.coord = [
       position.coords.latitude,
       position.coords.longitude,
     ];
+  }
+
+  setCity(city) {
+    this.queryParam.city = city;
   }
 
   #getRequestLine() {
@@ -171,7 +177,7 @@ class WeatherWidgetConnector {
     const query = [
       `lat=${this.queryParam.coord[0]}`,
       `lon=${this.queryParam.coord[1]}`,
-      // "q=Kyiv",
+      this.queryParam.city == null ? "" : `q=${this.queryParam.city}`,
       `appid=${this.queryParam.apiKey}`,
       "units=metric",
       `lang=${this.queryParam.lang}`,
@@ -193,8 +199,10 @@ class WeatherWidget {
   }
 
   update() {
+    this.layout.setLoaderState(true);
     this.connector.loadWeatherData().then((data) => {
       this.layout.setData(data);
+      this.layout.setLoaderState(false);
     });
   }
 
@@ -208,8 +216,12 @@ class WeatherWidget {
     });
   }
 
+  setCity(cityName) {
+    this.connector.setCity(cityName);
+    this.update();
+  }
+
   #handleLocationButton() {
-    console.log("click LOCATION");
     this.getLocation().then((r) => {
       this.connector.updateLocation(r);
       this.update();
@@ -220,3 +232,10 @@ class WeatherWidget {
 const weatherWidget = new WeatherWidget(
   document.getElementById("weather-widget")
 );
+
+const container = document.querySelector(".super-buttons");
+container.querySelectorAll("button").forEach((button) => {
+  button.addEventListener("click", () =>
+    weatherWidget.setCity(button.innerText)
+  );
+});

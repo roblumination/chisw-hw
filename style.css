@@ -1,0 +1,27 @@
+body {
+  margin: 0px;
+  background-color: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.container__wrapper {
+  margin: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  perspective: 500px;
+}
+
+@keyframes fade-in {
+  0% {
+    transform: translateY(-100px) rotate3d(1, 0, 0, 45deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0px) rotate3d(1, 0, 0, 0deg);
+    opacity: 1;
+  }
+}

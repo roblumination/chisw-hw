@@ -1,0 +1,30 @@
+body {
+  margin: 0px;
+  background-color: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.container__wrapper {
+  margin: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  perspective: 500px;
+  // background-color: #fff;
+}
+
+@keyframes fade-in {
+  0% {
+    transform: translateY(-100px) rotate3d(1, 0, 0, 45deg);
+    opacity: 0;
+    // box-shadow: 0 0px 0px #0003, 0 0 0px #0002;
+  }
+  100% {
+    transform: translateY(0px) rotate3d(1, 0, 0, 0deg);
+    opacity: 1;
+    // box-shadow: 0 5px 5px #0003, 0 0 5px #0002;
+  }
+}

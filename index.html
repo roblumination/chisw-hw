@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather widget test</title>
+    <script src="index.js" defer></script>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="weather.css" />
+  </head>
+  <body>
+    <div class="container__wrapper">
+      <div id="weather-widget" class="ww">
+        <div class="ww__left ww__section">
+          <div class="ww__temp">
+            <img class="ww__temp__ico" src="http://openweathermap.org/img/wn/10d@2x.png"></img>
+            <div class="ww__temp__value">27°C</div>
+            <div class="ww__temp__feels">FEELS LIKE: 25°C</div>
+          </div>
+          <div class="ww__city">
+            <div class="ww__city__name">in <span>City</span></div>
+            <button class="ww__city__change">detect</button>
+          </div>
+        </div>
+        <div class="ww__right ww__section">
+          <div class="ww__data">
+            <div>Pressure:</div>
+            <div>720 mmhg</div>
+            <div>Humidity:</div>
+            <div>50 %</div>
+            <div>Wind:</div>
+            <div>10 m/s</div>
+          </div>
+          <div class="ww__graph">
+            <div class="ww__graph__cloud ww__graph__cloud2"></div>
+            <div class="ww__graph__cloud ww__graph__cloud1"></div>
+            <div class="ww__graph__nswe__bg"></div>
+            <div class="ww__graph__nswe">
+              <div class="ww__graph__nswe__arrow"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div>
+      <div>
+        <a
+          href="https://iconscout.com/icon-pack/weather-polar-night-icons"
+          target="_blank"
+          >Weather Polar Night Icons Icon Pack</a
+        >
+        by
+        <a
+          href="https://iconscout.com/contributors/amedia-utvikling"
+          target="_blank"
+          >Amedia Utvikling</a
+        >
+      </div>
+    </div> -->
+  </body>
+</html>

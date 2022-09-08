@@ -1,0 +1,177 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap");
+
+$accent: #ec6e4c;
+
+.ww {
+  width: 400px;
+  height: 200px;
+  border-radius: 10px;
+  // padding: 10px;
+
+  display: flex;
+  font-family: Manrope;
+  font-size: 16px;
+  overflow: hidden;
+  color: #49484a;
+  & * {
+    // font-size: 16px;
+    font-family: Manrope;
+  }
+
+  background-color: #fff;
+  outline: 1px solid #aaa;
+  box-shadow: 0 0 5px #0003, 0 5px 10px #0003;
+
+  &__section {
+    // flex-grow: 1;
+    width: 50%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    & * {
+      box-sizing: border-box;
+      // border: 1px solid #f0f;
+    }
+    .ww {
+      &__temp {
+        margin-top: -20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        &__ico {
+          width: 100px;
+          height: 100px;
+        }
+        &__value {
+          margin-top: -30px;
+          font-size: 48px;
+          // line-height: 1em;
+        }
+        &__feels {
+          font-size: 12px;
+          text-transform: uppercase;
+          opacity: 50%;
+        }
+      }
+      &__city {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        &__name {
+        }
+        &__change {
+          background-color: #eee;
+          border: 0px;
+          border-radius: 5px;
+          cursor: pointer;
+          user-select: none;
+          &:hover {
+            background-color: rgba($accent, 50%);
+            // background-color: $accent;
+            // color: #fff;
+          }
+          &:active {
+            background-color: $accent;
+            color: #fff;
+          }
+        }
+      }
+      &__data {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        grid-column-gap: 10px;
+        grid-row-gap: 0px;
+        padding-bottom: 10px;
+
+        & > *:nth-child(odd) {
+          text-align: right;
+          font-weight: bold;
+        }
+      }
+      &__graph {
+        margin: 0 -10px;
+        margin-bottom: -10px;
+        flex-grow: 1;
+        position: relative;
+        background: #8882 url("./ww/grid.svg");
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        // box-shadow: inset 0 2px 5px #0003;
+        // border-top: 1px solid #ccc;
+        // border-left: 1px solid #ccc;
+        // mask-image: linear-gradient(rgba(0, 0, 0, 1), transparent);
+        // -webkit-mask: linear-gradient(0, #000 0% 80%, transparent 100%);
+        // background-position: center;
+        //
+
+        &__cloud {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          z-index: 0;
+
+          &1 {
+            background: url("./ww/clouds_L.svg");
+            animation: clouds-move 70s infinite linear;
+          }
+
+          &2 {
+            background: url("./ww/clouds_D.svg");
+            animation: clouds-move 100s infinite linear;
+          }
+        }
+
+        &__nswe {
+          position: relative;
+          z-index: 1000;
+          width: 100px;
+          height: 100px;
+          background: url("./ww/nwse.svg");
+
+          &__arrow {
+            width: 100px;
+            height: 100px;
+            // background-color: #f00;
+            z-index: 1500;
+            transform: rotate(-45deg);
+
+            background: url("./ww/arrow.svg");
+          }
+
+          &__bg {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            // background-color: #fff4;
+            background-color: rgba($accent, 5%);
+            // backdrop-filter: blur(2px);
+          }
+        }
+      }
+    }
+  }
+  &__left {
+    // border: 1px solid #f00;
+
+    justify-content: center;
+    gap: 10px;
+  }
+  &__right {
+    background-color: #f8f8f8;
+    // padding-left: 20px;
+    // border: 1px solid #0f0;
+    // flex-grow: ;
+  }
+}
+
+@keyframes clouds-move {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 1000px 950px;
+  }
+}

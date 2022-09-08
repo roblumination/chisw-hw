@@ -11,7 +11,6 @@ $accent: #ec6e4c;
   width: 400px;
   height: 200px;
   border-radius: 10px;
-  // padding: 10px;
 
   display: flex;
   font-family: Manrope;
@@ -20,7 +19,6 @@ $accent: #ec6e4c;
   overflow: hidden;
   color: #49484a;
   & * {
-    // font-size: 16px;
     font-family: Manrope;
   }
 
@@ -34,24 +32,22 @@ $accent: #ec6e4c;
     pointer-events: none;
     width: 100%;
     height: 100%;
-    background-color: rgba($accent, 70%);
-    // opacity: 0;
+    // background-color: rgba($accent, 70%);
+    background-color: #fff;
     z-index: 2000;
-    color: #fff;
+    color: #333;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
   &__section {
-    // flex-grow: 1;
     width: 50%;
     padding: 10px;
     display: flex;
     flex-direction: column;
     & * {
       box-sizing: border-box;
-      // border: 1px solid #f0f;
     }
     .ww {
       &__temp {
@@ -66,7 +62,6 @@ $accent: #ec6e4c;
         &__value {
           margin-top: -30px;
           font-size: 48px;
-          // line-height: 1em;
         }
         &__feels {
           font-size: 12px;
@@ -88,8 +83,6 @@ $accent: #ec6e4c;
           user-select: none;
           &:hover {
             background-color: rgba($accent, 50%);
-            // background-color: $accent;
-            // color: #fff;
           }
           &:active {
             background-color: $accent;
@@ -115,7 +108,7 @@ $accent: #ec6e4c;
         margin-bottom: -10px;
         flex-grow: 1;
         position: relative;
-        background: #8882 url("./ww/grid.svg");
+        background: #8882 url("../assets/grid.svg");
         display: flex;
         align-items: center;
         justify-content: center;
@@ -125,25 +118,24 @@ $accent: #ec6e4c;
           width: 100%;
           height: 100%;
           z-index: 0;
-          // filter: drop-shadow(0 0 2px #8883);
 
           &1 {
-            background: url("./ww/clouds_L.svg");
+            background: url("../assets/clouds_L.svg");
             animation: clouds-move 70s infinite linear;
           }
 
           &2 {
-            background: url("./ww/clouds_D.svg");
+            background: url("../assets/clouds_D.svg");
             animation: clouds-move 100s infinite linear;
           }
 
           &M {
-            background: url("./ww/clouds_M.svg");
+            background: url("../assets/clouds_M.svg");
             animation: clouds-move 85s infinite linear;
           }
 
           &T {
-            background: url("./ww/clouds_T.svg");
+            background: url("../assets/clouds_T.svg");
             animation: clouds-move 60s infinite linear;
           }
         }
@@ -153,17 +145,16 @@ $accent: #ec6e4c;
           z-index: 1000;
           width: 100px;
           height: 100px;
-          background: url("./ww/nwse.svg");
+          background: url("../assets/nwse.svg");
 
           &__arrow {
             width: 100px;
             height: 100px;
-            // background-color: #f00;
             z-index: 1500;
             transform: rotate(-45deg);
             transition: transform 0.5s;
 
-            background: url("./ww/arrow.svg");
+            background: url("../assets/arrow.svg");
           }
 
           &__bg {
@@ -171,25 +162,18 @@ $accent: #ec6e4c;
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            // background-color: #fff4;
             background-color: rgba($accent, 5%);
-            // backdrop-filter: blur(2px);
           }
         }
       }
     }
   }
   &__left {
-    // border: 1px solid #f00;
-
     justify-content: center;
     gap: 10px;
   }
   &__right {
     background-color: #f8f8f8;
-    // padding-left: 20px;
-    // border: 1px solid #0f0;
-    // flex-grow: ;
   }
 }
 

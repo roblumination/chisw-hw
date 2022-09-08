@@ -1,0 +1,48 @@
+import { OpenWeatherAPIKey } from "./key.js";
+
+export default class WeatherWidgetConnector {
+  constructor() {
+    this.queryParam = {
+      apiKey: OpenWeatherAPIKey,
+      coord: [50.4333, 30.5167],
+      lang: "ua",
+      city: null,
+    };
+  }
+
+  loadWeatherData() {
+    return new Promise((resolve, reject) => {
+      fetch(this.#getRequestLine())
+        .then((response) => response.json())
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((reason) => reject(reason));
+    });
+  }
+
+  updateLocation(position) {
+    if (this.queryParam.city) delete this.queryParam.city;
+    this.queryParam.coord = [
+      position.coords.latitude,
+      position.coords.longitude,
+    ];
+  }
+
+  setCity(city) {
+    this.queryParam.city = city;
+  }
+
+  #getRequestLine() {
+    const base = "https://api.openweathermap.org/data/2.5/weather";
+    const query = [
+      `lat=${this.queryParam.coord[0]}`,
+      `lon=${this.queryParam.coord[1]}`,
+      this.queryParam.city == null ? "" : `q=${this.queryParam.city}`,
+      `appid=${this.queryParam.apiKey}`,
+      "units=metric",
+      `lang=${this.queryParam.lang}`,
+    ];
+    return base + "?" + query.join("&");
+  }
+}

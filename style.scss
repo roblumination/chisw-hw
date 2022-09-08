@@ -1,3 +1,5 @@
+$accent: #ec6e4c;
+
 body {
   margin: 0px;
   background-color: #eee;
@@ -17,7 +19,25 @@ body {
 }
 
 .super-buttons {
-  // background-color: #f00;
-  // width: 100px;
-  // height: 100px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+
+  button {
+    padding: 5px 8px;
+    border-radius: 3px;
+    background-color: #ddd;
+    border: none;
+    transition: all 0.2s;
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: inset 0 -2px 0px $accent;
+    }
+
+    &:active {
+      background-color: $accent;
+      color: #fff;
+    }
+  }
 }

@@ -20,14 +20,14 @@ interface ILayoutGraphixElements {
 }
 
 export default class WeatherWidgetLayout {
-  data: ILayoutDataElements;
-  graphix: ILayoutGraphixElements;
-  mainEl: HTMLElement;
+  private dataElements: ILayoutDataElements;
+  private graphixElements: ILayoutGraphixElements;
+  private mainEl: HTMLElement;
 
   constructor(mainEl: HTMLElement, buttonLocationHandler: Function) {
     this.mainEl = mainEl;
-    this.graphix = this.getGraphixElements();
-    this.data = this.getDataElements();
+    this.graphixElements = this.getGraphixElements();
+    this.dataElements = this.getDataElements();
     this.init(buttonLocationHandler);
   }
 
@@ -35,7 +35,9 @@ export default class WeatherWidgetLayout {
     this.initMainElement();
     this.initStyles("./ww/styles/weather.css");
     this.initLayout();
-    this.graphix.buttonLocation!.addEventListener("click", () => handler());
+    this.graphixElements.buttonLocation!.addEventListener("click", () =>
+      handler()
+    );
   }
 
   private initMainElement() {
@@ -116,17 +118,18 @@ export default class WeatherWidgetLayout {
   }
 
   setLoaderState(isLoading: boolean) {
-    if (this.graphix.loader) {
-      this.graphix.loader.style.opacity = isLoading ? "1" : "0";
+    if (this.graphixElements.loader) {
+      this.graphixElements.loader.style.opacity = isLoading ? "1" : "0";
     }
   }
 
   setData(data: IOpenWeatherDataResponse) {
-    type DataField = keyof typeof this.data;
+    type DataField = keyof typeof this.dataElements;
 
     const setVal = (field: string, value: string): void => {
       const key = field as DataField;
-      if (this.data[key] !== null) this.data[key]!.innerText = value;
+      if (this.dataElements[key] !== null)
+        this.dataElements[key].innerText = value;
     };
 
     // console.log(data);
@@ -147,13 +150,13 @@ export default class WeatherWidgetLayout {
   setWind(deg: number, stength: number) {
     const [x, y] = this.calcWindVectors(deg).map((v) => v * 1000 * stength);
     this.setWindCloudSpeed(-x, y);
-    if (this.graphix.arrow)
-      this.graphix.arrow.style.transform = `rotate(${deg}deg)`;
+    if (this.graphixElements.arrow)
+      this.graphixElements.arrow.style.transform = `rotate(${deg}deg)`;
   }
 
   setIco(code: string) {
-    if (this.graphix.ico)
-      this.graphix.ico.src = `http://openweathermap.org/img/wn/${code}@2x.png`;
+    if (this.graphixElements.ico)
+      this.graphixElements.ico.src = `http://openweathermap.org/img/wn/${code}@2x.png`;
   }
 
   private setWindCloudSpeed(x: number, y: number) {

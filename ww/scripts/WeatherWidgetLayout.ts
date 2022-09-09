@@ -4,19 +4,19 @@ import { convertHPaToMmHg, getXYFromDeg, roundToSpaces } from "./utils.js";
 type WetherElement = HTMLElement | null;
 
 interface ILayoutDataElements {
-  temp: WetherElement;
-  tempFeelsLike: WetherElement;
-  cityName: WetherElement;
-  pressure: WetherElement;
-  humidity: WetherElement;
-  windSpeed: WetherElement;
+  temp: HTMLElement | null;
+  tempFeelsLike: HTMLElement | null;
+  pressure: HTMLElement | null;
+  humidity: HTMLElement | null;
+  windSpeed: HTMLElement | null;
+  cityName: HTMLElement | null;
 }
 
 interface ILayoutGraphixElements {
-  loader: WetherElement;
-  buttonLocation: WetherElement;
-  ico: WetherElement;
-  arrow: WetherElement;
+  loader: HTMLElement | null;
+  buttonLocation: HTMLElement | null;
+  ico: HTMLImageElement | null;
+  arrow: HTMLElement | null;
 }
 
 export default class WeatherWidgetLayout {
@@ -25,9 +25,9 @@ export default class WeatherWidgetLayout {
   mainEl: HTMLElement;
 
   constructor(mainEl: HTMLElement, buttonLocationHandler: Function) {
-    // this.graphix = {};
-    // this.data = {};
     this.mainEl = mainEl;
+    this.graphix = this.getGraphixElements();
+    this.data = this.getDataElements();
     this.init(buttonLocationHandler);
   }
 
@@ -35,12 +35,41 @@ export default class WeatherWidgetLayout {
     this.initMainElement();
     this.initStyles("./ww/styles/weather.css");
     this.initLayout();
-    this.initDOMElements();
     this.graphix.buttonLocation!.addEventListener("click", () => handler());
   }
 
   private initMainElement() {
     this.mainEl.classList.add("ww");
+  }
+
+  private getGraphixElements(): ILayoutGraphixElements {
+    return {
+      loader: this.mainEl.querySelector<HTMLElement>("#weather-button-city"),
+      buttonLocation: this.mainEl.querySelector<HTMLElement>(
+        "#weather-button-city"
+      ),
+      ico: this.mainEl.querySelector<HTMLImageElement>("#weather-value-icon"),
+      arrow: this.mainEl.querySelector<HTMLElement>("#weather-wind-arrow"),
+    };
+  }
+
+  private getDataElements(): ILayoutDataElements {
+    return {
+      temp: this.mainEl.querySelector<HTMLElement>("#weather-value-temp"),
+      tempFeelsLike: this.mainEl.querySelector<HTMLElement>(
+        "#weather-value-feels"
+      ),
+      cityName: this.mainEl.querySelector<HTMLElement>("#weather-value-city"),
+      pressure: this.mainEl.querySelector<HTMLElement>(
+        "#weather-value-pressure"
+      ),
+      humidity: this.mainEl.querySelector<HTMLElement>(
+        "#weather-value-humidity"
+      ),
+      windSpeed: this.mainEl.querySelector<HTMLElement>(
+        "#weather-value-wind-speed"
+      ),
+    };
   }
 
   private initStyles(path: string) {
@@ -86,48 +115,23 @@ export default class WeatherWidgetLayout {
     this.mainEl.innerHTML = base;
   }
 
-  private initDOMElements() {
-    this.graphix = {
-      loader: this.mainEl.querySelector<HTMLElement>("#weather-button-city"),
-      buttonLocation: this.mainEl.querySelector<HTMLElement>(
-        "#weather-button-city"
-      ),
-      ico: this.mainEl.querySelector<HTMLElement>("#weather-value-icon"),
-      arrow: this.mainEl.querySelector<HTMLElement>("#weather-wind-arrow"),
-    };
-    this.data = {
-      temp: this.mainEl.querySelector<HTMLElement>("#weather-value-temp"),
-      tempFeelsLike: this.mainEl.querySelector<HTMLElement>(
-        "#weather-value-feels"
-      ),
-      cityName: this.mainEl.querySelector<HTMLElement>("#weather-value-city"),
-      pressure: this.mainEl.querySelector<HTMLElement>(
-        "#weather-value-pressure"
-      ),
-      humidity: this.mainEl.querySelector<HTMLElement>(
-        "#weather-value-humidity"
-      ),
-      windSpeed: this.mainEl.querySelector<HTMLElement>(
-        "#weather-value-wind-speed"
-      ),
-    };
-  }
-
   setLoaderState(isLoading: boolean) {
-    this.graphix.loader.style.opacity = isLoading ? "1" : "0";
+    if (this.graphix.loader) {
+      this.graphix.loader.style.opacity = isLoading ? "1" : "0";
+    }
   }
 
   setData(data: IOpenWeatherDataResponse) {
     type DataField = keyof typeof this.data;
-    const setVal = (field: string, data: string): void => {
-      this.data[field as DataField].innerText = data;
+
+    const setVal = (field: string, value: string): void => {
+      const key = field as DataField;
+      if (this.data[key] !== null) this.data[key]!.innerText = value;
     };
 
-    console.log(data);
-
-    // this.data.humidity.innerText = data.main.humidity.toString();
-    setVal("temp", Math.round(data.main.temp).toString());
+    // console.log(data);
     setVal("humidity", data.main.humidity.toString());
+    setVal("temp", Math.round(data.main.temp).toString());
     setVal("pressure", convertHPaToMmHg(data.main.pressure).toString());
     setVal("tempFeelsLike", Math.round(data.main.feels_like).toString());
     setVal("cityName", data.name);
@@ -137,20 +141,22 @@ export default class WeatherWidgetLayout {
       data.wind.speed > 1
         ? Math.round(data.wind.speed)
         : Math.round(data.wind.speed * 10) / 10;
-    setVal("windSpeed", windSpeed);
+    setVal("windSpeed", windSpeed.toString());
   }
 
-  setWind(deg, stength) {
-    const [x, y] = this.#calcWindVectors(deg).map((v) => v * 1000 * stength);
-    this.#setWindCloudSpeed(-x, y);
-    this.graphix.arrow.style.transform = `rotate(${deg}deg)`;
+  setWind(deg: number, stength: number) {
+    const [x, y] = this.calcWindVectors(deg).map((v) => v * 1000 * stength);
+    this.setWindCloudSpeed(-x, y);
+    if (this.graphix.arrow)
+      this.graphix.arrow.style.transform = `rotate(${deg}deg)`;
   }
 
-  setIco(code) {
-    this.graphix.ico.src = `http://openweathermap.org/img/wn/${code}@2x.png`;
+  setIco(code: string) {
+    if (this.graphix.ico)
+      this.graphix.ico.src = `http://openweathermap.org/img/wn/${code}@2x.png`;
   }
 
-  #setWindCloudSpeed(x, y) {
+  private setWindCloudSpeed(x: number, y: number) {
     document.documentElement.style.setProperty(
       "--weather-widget-windspeed-x",
       x + "px"
@@ -161,7 +167,7 @@ export default class WeatherWidgetLayout {
     );
   }
 
-  #calcWindVectors(deg) {
+  private calcWindVectors(deg: number) {
     const [x, y] = getXYFromDeg(deg);
     return [roundToSpaces(x, 2), roundToSpaces(y, 2)];
   }

@@ -24,15 +24,18 @@ export default class WeatherWidgetLayout {
 
   constructor(mainEl: HTMLElement, buttonLocationHandler: Function) {
     this.mainEl = mainEl;
+    this.initLayout();
+
     this.graphixElements = this.getGraphixElements();
     this.dataElements = this.getDataElements();
+    console.log(this.dataElements);
+
     this.init(buttonLocationHandler);
   }
 
   private init(handler: Function) {
     this.initMainElement();
     this.initStyles("./ww/styles/weather.css");
-    this.initLayout();
     if (this.graphixElements.buttonLocation) {
       this.graphixElements.buttonLocation.addEventListener("click", () =>
         handler()
@@ -46,7 +49,7 @@ export default class WeatherWidgetLayout {
 
   private getGraphixElements(): ILayoutGraphixElements {
     return {
-      loader: this.mainEl.querySelector<HTMLElement>("#weather-button-city"),
+      loader: this.mainEl.querySelector<HTMLElement>("#weather-loader"),
       buttonLocation: this.mainEl.querySelector<HTMLElement>(
         "#weather-button-city"
       ),
@@ -56,8 +59,8 @@ export default class WeatherWidgetLayout {
   }
 
   private getDataElements(): ILayoutDataElements {
-    console.log(this.mainEl.querySelector("#weather-value-temp"));
-    console.log(this.mainEl);
+    // console.log(this.mainEl.querySelector("#weather-value-temp"));
+    // console.log(document.querySelector("#weather-value-temp"));
     return {
       temp: this.mainEl.querySelector<HTMLElement>("#weather-value-temp"),
       tempFeelsLike: this.mainEl.querySelector<HTMLElement>(
@@ -133,7 +136,7 @@ export default class WeatherWidgetLayout {
 
     const setElementText = (name: string, value: string): void => {
       const key = name as DataField;
-      // console.log(this.dataElements[key], key);
+      console.log(this.dataElements[key], key);
       if (this.dataElements[key] !== null) {
         // console.log(value);
         this.dataElements[key]!.innerText = value;

@@ -2,14 +2,15 @@ import { convertHPaToMmHg, getXYFromDeg, roundToSpaces } from "./utils.js";
 export default class WeatherWidgetLayout {
     constructor(mainEl, buttonLocationHandler) {
         this.mainEl = mainEl;
+        this.initLayout();
         this.graphixElements = this.getGraphixElements();
         this.dataElements = this.getDataElements();
+        console.log(this.dataElements);
         this.init(buttonLocationHandler);
     }
     init(handler) {
         this.initMainElement();
         this.initStyles("./ww/styles/weather.css");
-        this.initLayout();
         if (this.graphixElements.buttonLocation) {
             this.graphixElements.buttonLocation.addEventListener("click", () => handler());
         }
@@ -19,15 +20,15 @@ export default class WeatherWidgetLayout {
     }
     getGraphixElements() {
         return {
-            loader: this.mainEl.querySelector("#weather-button-city"),
+            loader: this.mainEl.querySelector("#weather-loader"),
             buttonLocation: this.mainEl.querySelector("#weather-button-city"),
             ico: this.mainEl.querySelector("#weather-value-icon"),
             arrow: this.mainEl.querySelector("#weather-wind-arrow"),
         };
     }
     getDataElements() {
-        console.log(this.mainEl.querySelector("#weather-value-temp"));
-        console.log(this.mainEl);
+        // console.log(this.mainEl.querySelector("#weather-value-temp"));
+        // console.log(document.querySelector("#weather-value-temp"));
         return {
             temp: this.mainEl.querySelector("#weather-value-temp"),
             tempFeelsLike: this.mainEl.querySelector("#weather-value-feels"),
@@ -87,7 +88,7 @@ export default class WeatherWidgetLayout {
         // console.log(this.graphixElements);
         const setElementText = (name, value) => {
             const key = name;
-            // console.log(this.dataElements[key], key);
+            console.log(this.dataElements[key], key);
             if (this.dataElements[key] !== null) {
                 // console.log(value);
                 this.dataElements[key].innerText = value;

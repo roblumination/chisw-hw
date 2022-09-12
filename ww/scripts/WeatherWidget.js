@@ -11,10 +11,10 @@ export default class WeatherWidget {
         _WeatherWidget_instances.add(this);
         this.layout = new WeatherWidgetLayout(el, () => __classPrivateFieldGet(this, _WeatherWidget_instances, "m", _WeatherWidget_handleLocationButton).call(this));
         this.connector = new WeatherWidgetConnector();
-        // this.connector.loadWeatherData().then((data) => {
-        //   this.layout.setLoaderState(false);
-        //   this.layout.setData(data);
-        // });
+        this.connector.loadWeatherData().then((data) => {
+            this.layout.setLoaderState(false);
+            this.layout.setData(data);
+        });
     }
     update() {
         this.layout.setLoaderState(true);

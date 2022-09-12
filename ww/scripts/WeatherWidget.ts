@@ -10,10 +10,10 @@ export default class WeatherWidget {
       this.#handleLocationButton()
     );
     this.connector = new WeatherWidgetConnector();
-    // this.connector.loadWeatherData().then((data) => {
-    //   this.layout.setLoaderState(false);
-    //   this.layout.setData(data);
-    // });
+    this.connector.loadWeatherData().then((data) => {
+      this.layout.setLoaderState(false);
+      this.layout.setData(data);
+    });
   }
 
   update() {

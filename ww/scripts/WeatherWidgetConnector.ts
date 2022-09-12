@@ -1,5 +1,5 @@
 import IOpenWeatherDataResponse from "./IOpenWeatherDataResponse.js";
-import { OpenWeatherAPIKey } from "./key.js";
+const OpenWeatherAPIKey: string = "4322a85eea73487e8dcc8898fada9876";
 
 interface IQueryParams {
   apiKey: string;
@@ -42,7 +42,7 @@ export default class WeatherWidgetConnector {
     this.queryParam.city = city;
   }
 
-  private getRequestLine() {
+  private getRequestLine(): string {
     const base: string = "https://api.openweathermap.org/data/2.5/weather";
     const query: Array<string> = [
       `lat=${this.queryParam.coord[0]}`,

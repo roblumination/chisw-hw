@@ -1,16 +1,19 @@
-import WeatherWidgetConnector from "./WeatherWidgetConnector.ts";
-import WeatherWidgetLayout from "./WeatherWidgetLayout.ts";
+import WeatherWidgetConnector from "./WeatherWidgetConnector.js";
+import WeatherWidgetLayout from "./WeatherWidgetLayout.js";
 
 export default class WeatherWidget {
+  layout: WeatherWidgetLayout;
+  connector: WeatherWidgetConnector;
+
   constructor(el: HTMLElement) {
     this.layout = new WeatherWidgetLayout(el, () =>
       this.#handleLocationButton()
     );
     this.connector = new WeatherWidgetConnector();
-    this.connector.loadWeatherData().then((data) => {
-      this.layout.setLoaderState(false);
-      this.layout.setData(data);
-    });
+    // this.connector.loadWeatherData().then((data) => {
+    //   this.layout.setLoaderState(false);
+    //   this.layout.setData(data);
+    // });
   }
 
   update() {
@@ -31,14 +34,14 @@ export default class WeatherWidget {
     });
   }
 
-  setCity(cityName) {
+  setCity(cityName: string) {
     this.connector.setCity(cityName);
     this.update();
   }
 
   #handleLocationButton() {
     this.getLocation().then((r) => {
-      this.connector.updateLocation(r);
+      this.connector.updateLocation(r as GeolocationPosition);
       this.update();
     });
   }

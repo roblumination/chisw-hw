@@ -1,8 +1,6 @@
 import IOpenWeatherDataResponse from "./IOpenWeatherDataResponse.js";
 import { convertHPaToMmHg, getXYFromDeg, roundToSpaces } from "./utils.js";
 
-type WetherElement = HTMLElement | null;
-
 interface ILayoutDataElements {
   temp: HTMLElement | null;
   tempFeelsLike: HTMLElement | null;
@@ -35,9 +33,11 @@ export default class WeatherWidgetLayout {
     this.initMainElement();
     this.initStyles("./ww/styles/weather.css");
     this.initLayout();
-    this.graphixElements.buttonLocation!.addEventListener("click", () =>
-      handler()
-    );
+    if (this.graphixElements.buttonLocation) {
+      this.graphixElements.buttonLocation.addEventListener("click", () =>
+        handler()
+      );
+    }
   }
 
   private initMainElement() {
@@ -56,6 +56,8 @@ export default class WeatherWidgetLayout {
   }
 
   private getDataElements(): ILayoutDataElements {
+    console.log(this.mainEl.querySelector("#weather-value-temp"));
+    console.log(this.mainEl);
     return {
       temp: this.mainEl.querySelector<HTMLElement>("#weather-value-temp"),
       tempFeelsLike: this.mainEl.querySelector<HTMLElement>(
@@ -123,28 +125,40 @@ export default class WeatherWidgetLayout {
     }
   }
 
-  setData(data: IOpenWeatherDataResponse) {
+  setData(responseData: IOpenWeatherDataResponse) {
     type DataField = keyof typeof this.dataElements;
 
-    const setVal = (field: string, value: string): void => {
-      const key = field as DataField;
-      if (this.dataElements[key] !== null)
-        this.dataElements[key].innerText = value;
+    // console.log(this.dataElements);
+    // console.log(this.graphixElements);
+
+    const setElementText = (name: string, value: string): void => {
+      const key = name as DataField;
+      // console.log(this.dataElements[key], key);
+      if (this.dataElements[key] !== null) {
+        // console.log(value);
+        this.dataElements[key]!.innerText = value;
+      }
     };
 
-    // console.log(data);
-    setVal("humidity", data.main.humidity.toString());
-    setVal("temp", Math.round(data.main.temp).toString());
-    setVal("pressure", convertHPaToMmHg(data.main.pressure).toString());
-    setVal("tempFeelsLike", Math.round(data.main.feels_like).toString());
-    setVal("cityName", data.name);
-    this.setWind(data.wind.deg, data.wind.speed);
-    this.setIco(data.weather[0].icon);
+    console.log(responseData);
+    setElementText("humidity", responseData.main.humidity.toString());
+    setElementText("temp", Math.round(responseData.main.temp).toString());
+    setElementText(
+      "pressure",
+      convertHPaToMmHg(responseData.main.pressure).toString()
+    );
+    setElementText(
+      "tempFeelsLike",
+      Math.round(responseData.main.feels_like).toString()
+    );
+    setElementText("cityName", responseData.name);
+    this.setWind(responseData.wind.deg, responseData.wind.speed);
+    this.setIco(responseData.weather[0].icon);
     const windSpeed =
-      data.wind.speed > 1
-        ? Math.round(data.wind.speed)
-        : Math.round(data.wind.speed * 10) / 10;
-    setVal("windSpeed", windSpeed.toString());
+      responseData.wind.speed > 1
+        ? Math.round(responseData.wind.speed)
+        : Math.round(responseData.wind.speed * 10) / 10;
+    setElementText("windSpeed", windSpeed.toString());
   }
 
   setWind(deg: number, stength: number) {

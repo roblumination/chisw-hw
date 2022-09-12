@@ -1,4 +1,4 @@
-interface Item {
+export interface Item {
   name: string;
   price: number;
 }
@@ -7,32 +7,27 @@ export class Invoice {
   private token: number;
   itemList: Array<Item>;
 
-  constructor(itemList) {
+  constructor(itemList: Array<Item>) {
     this.itemList = itemList;
     this.token = ~~(Math.random() * 1000);
   }
 
   getSum() {
-    console.log(this.itemList.reduce((a, b) => a + b.price, 0));
     return this.itemList.reduce((a, b) => a + b.price, 0);
   }
 
-  getItem(name) {
-    console.log(
-      JSON.stringify(this.itemList.filter((item) => item.name === name))
-    );
+  getItem(name: string) {
     return this.itemList.filter((item) => item.name === name);
   }
 
   pay() {
-    console.log("Paying with token " + this.#token + "...");
+    console.log("Paying with token " + this.token + "...");
   }
 }
 
 export class AccountantInvoice extends Invoice {
-  constructor(itemList, ceoInformation) {
+  constructor(itemList: Array<Item>) {
     super(itemList);
-    this.ceoInformation = ceoInformation;
   }
 
   informTaxOffice() {
@@ -41,18 +36,19 @@ export class AccountantInvoice extends Invoice {
 }
 
 export class CEOInvoice extends Invoice {
-  constructor(itemList, ceoInformation) {
+  ceoInformation: string;
+  constructor(itemList: Array<Item>, ceoInformation: string) {
     super(itemList);
     this.ceoInformation = ceoInformation;
   }
 }
 
 export class CustomerInvoice extends Invoice {
-  constructor(itemList) {
+  constructor(itemList: Array<Item>) {
     super(itemList);
   }
 
-  report(text) {
+  report(text: string) {
     console.error(`[CUSTOMER REPORT]: ${text}`);
   }
 }

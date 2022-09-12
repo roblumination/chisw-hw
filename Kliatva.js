@@ -24,7 +24,12 @@ class Kliatva {
                     resolve(onResolve(value));
                 }
                 catch (e) {
-                    reject(e);
+                    if (e instanceof Error) {
+                        reject(e.message);
+                    }
+                    else {
+                        reject(e);
+                    }
                 }
             };
             const makeFail = (error) => {
@@ -32,7 +37,12 @@ class Kliatva {
                     reject(onReject(error));
                 }
                 catch (e) {
-                    reject(e);
+                    if (e instanceof Error) {
+                        reject(e.message);
+                    }
+                    else {
+                        reject(e);
+                    }
                 }
             };
             this.resolveQueue.push(makeFulfill);
@@ -62,7 +72,7 @@ class Kliatva {
     }
     finally(callback) {
         return this.then((value) => Kliatva.resolve(callback()).then(() => value, () => { }), (cause) => Kliatva.resolve(callback()).then(() => {
-            throw cause;
+            throw new Error(cause);
         }, () => { }));
     }
     static resolve(value) {

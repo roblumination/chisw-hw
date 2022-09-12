@@ -53,7 +53,11 @@ class Kliatva<T> {
         try {
           reject(onReject(error));
         } catch (e: any) {
-          reject(e);
+          if (e instanceof Error) {
+            reject(e.message);
+          } else {
+            reject(e);
+          }
         }
       };
       this.resolveQueue.push(makeFulfill);
@@ -94,7 +98,7 @@ class Kliatva<T> {
       (cause: string) =>
         Kliatva.resolve(callback()).then(
           () => {
-            throw cause;
+            throw new Error(cause);
           },
           () => {}
         )
@@ -157,7 +161,7 @@ class Kliatva<T> {
   }
 
   static allSettled<U>(kliatvasArray: Array<Kliatva<U>>) {
-    let kliatvasAlreadyDone = 0;
+    let kliatvasAlreadyDone: number = 0;
     const result: Array<settledResponse<U>> = [];
     const klitvasToWork = kliatvasArray.length;
 

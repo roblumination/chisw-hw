@@ -1,7 +1,7 @@
-enum kliatvaStatus {
-  pending = "pending",
-  fulfilled = "fulfilled",
-  rejected = "rejected",
+enum KliatvaStatus {
+  Pending = "PENDING",
+  Fulfilled = "FULFILLED",
+  Rejected = "REJECTED",
 }
 
 type mainKliatvaCallback<T> = (
@@ -10,22 +10,20 @@ type mainKliatvaCallback<T> = (
 ) => void;
 
 interface settledResponse<T> {
-  status: kliatvaStatus;
+  status: KliatvaStatus;
   value?: T;
   reason?: string;
 }
 
 class Kliatva<T> {
-  status: kliatvaStatus;
+  status: KliatvaStatus;
   mainCallback: mainKliatvaCallback<T>;
-  resolveQueue: Array<Function>;
-  rejectQueue: Array<Function>;
+  resolveQueue: Array<Function> = [];
+  rejectQueue: Array<Function> = [];
 
   constructor(callback: mainKliatvaCallback<T>) {
-    this.status = kliatvaStatus.pending;
+    this.status = KliatvaStatus.Pending;
     this.mainCallback = callback;
-    this.resolveQueue = [];
-    this.rejectQueue = [];
 
     this.mainCallback(
       (r: T) => this.doResolve(r),
@@ -71,8 +69,8 @@ class Kliatva<T> {
 
   doResolve(value: T) {
     const runResolve = () => {
-      if (this.status !== kliatvaStatus.pending) return;
-      this.status = kliatvaStatus.fulfilled;
+      if (this.status !== KliatvaStatus.Pending) return;
+      this.status = KliatvaStatus.Fulfilled;
       this.resolveQueue.forEach((fn) => {
         fn(value);
       });
@@ -82,7 +80,7 @@ class Kliatva<T> {
 
   doReject(value: string) {
     const doReject = () => {
-      this.status = kliatvaStatus.rejected;
+      this.status = KliatvaStatus.Rejected;
       this.rejectQueue.forEach((fn) => fn(value));
     };
     setTimeout(doReject);
@@ -166,9 +164,9 @@ class Kliatva<T> {
     const klitvasToWork = kliatvasArray.length;
 
     const addValue = (val: U, index: number) =>
-      (result[index] = { status: kliatvaStatus.fulfilled, value: val });
+      (result[index] = { status: KliatvaStatus.Fulfilled, value: val });
     const addReason = (res: string, index: number) =>
-      (result[index] = { status: kliatvaStatus.rejected, reason: res });
+      (result[index] = { status: KliatvaStatus.Rejected, reason: res });
 
     return new Kliatva((resolve: Function, reject: Function) => {
       kliatvasArray.forEach((kliatva, index) => {

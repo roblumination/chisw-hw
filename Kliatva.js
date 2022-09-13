@@ -1,16 +1,16 @@
 "use strict";
-var kliatvaStatus;
-(function (kliatvaStatus) {
-    kliatvaStatus["pending"] = "pending";
-    kliatvaStatus["fulfilled"] = "fulfilled";
-    kliatvaStatus["rejected"] = "rejected";
-})(kliatvaStatus || (kliatvaStatus = {}));
+var KliatvaStatus;
+(function (KliatvaStatus) {
+    KliatvaStatus["Pending"] = "PENDING";
+    KliatvaStatus["Fulfilled"] = "FULFILLED";
+    KliatvaStatus["Rejected"] = "REJECTED";
+})(KliatvaStatus || (KliatvaStatus = {}));
 class Kliatva {
     constructor(callback) {
-        this.status = kliatvaStatus.pending;
-        this.mainCallback = callback;
         this.resolveQueue = [];
         this.rejectQueue = [];
+        this.status = KliatvaStatus.Pending;
+        this.mainCallback = callback;
         this.mainCallback((r) => this.doResolve(r), (r) => this.doReject(r));
     }
     then(onResolve = () => { }, onReject = () => { }) {
@@ -54,9 +54,9 @@ class Kliatva {
     }
     doResolve(value) {
         const runResolve = () => {
-            if (this.status !== kliatvaStatus.pending)
+            if (this.status !== KliatvaStatus.Pending)
                 return;
-            this.status = kliatvaStatus.fulfilled;
+            this.status = KliatvaStatus.Fulfilled;
             this.resolveQueue.forEach((fn) => {
                 fn(value);
             });
@@ -65,7 +65,7 @@ class Kliatva {
     }
     doReject(value) {
         const doReject = () => {
-            this.status = kliatvaStatus.rejected;
+            this.status = KliatvaStatus.Rejected;
             this.rejectQueue.forEach((fn) => fn(value));
         };
         setTimeout(doReject);
@@ -123,8 +123,8 @@ class Kliatva {
         let kliatvasAlreadyDone = 0;
         const result = [];
         const klitvasToWork = kliatvasArray.length;
-        const addValue = (val, index) => (result[index] = { status: kliatvaStatus.fulfilled, value: val });
-        const addReason = (res, index) => (result[index] = { status: kliatvaStatus.rejected, reason: res });
+        const addValue = (val, index) => (result[index] = { status: KliatvaStatus.Fulfilled, value: val });
+        const addReason = (res, index) => (result[index] = { status: KliatvaStatus.Rejected, reason: res });
         return new Kliatva((resolve, reject) => {
             kliatvasArray.forEach((kliatva, index) => {
                 Kliatva.resolve(kliatva).then((val) => {

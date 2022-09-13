@@ -13,7 +13,7 @@ export class Invoice {
   }
 
   getSum() {
-    return this.itemList.reduce((a, b) => a + b.price, 0);
+    return this.itemList.reduce((sum, item) => sum + item.price, 0);
   }
 
   getItem(name: string) {

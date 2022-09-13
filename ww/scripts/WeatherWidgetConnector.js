@@ -1,10 +1,11 @@
 const OpenWeatherAPIKey = "4322a85eea73487e8dcc8898fada9876";
 export default class WeatherWidgetConnector {
     constructor() {
+        this.DEFAULT_LOCATION = [50.4333, 30.5167];
         this.queryParam = {
             apiKey: OpenWeatherAPIKey,
-            coord: [50.4333, 30.5167],
-            lang: "ua",
+            coord: this.DEFAULT_LOCATION,
+            language: "ua",
         };
     }
     loadWeatherData() {
@@ -36,7 +37,7 @@ export default class WeatherWidgetConnector {
             this.queryParam.city == null ? "" : `q=${this.queryParam.city}`,
             `appid=${this.queryParam.apiKey}`,
             "units=metric",
-            `lang=${this.queryParam.lang}`,
+            `lang=${this.queryParam.language}`,
         ];
         return base + "?" + query.join("&");
     }

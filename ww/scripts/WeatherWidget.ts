@@ -3,29 +3,24 @@ import WeatherWidgetLayout from "./WeatherWidgetLayout.js";
 
 export default class WeatherWidget {
   layout: WeatherWidgetLayout;
-  connector: WeatherWidgetConnector;
+  connector: WeatherWidgetConnector = new WeatherWidgetConnector();
 
   constructor(el: HTMLElement) {
     this.layout = new WeatherWidgetLayout(el, () =>
-      this.#handleLocationButton()
+      this.handleLocationButton()
     );
-    this.connector = new WeatherWidgetConnector();
-    this.connector.loadWeatherData().then((data) => {
-      this.layout.setLoaderState(false);
-      this.layout.setData(data);
-    });
+    this.update();
   }
 
-  update() {
-    this.layout.setLoaderState(true);
-    this.connector.loadWeatherData().then((data) => {
-      this.layout.setData(data);
-      this.layout.setLoaderState(false);
-    });
+  public async update() {
+    this.layout.showLoader();
+    const weatherData = await this.connector.loadWeatherData();
+    this.layout.setData(weatherData);
+    this.layout.hideLoader();
   }
 
-  getLocation() {
-    return new Promise((resolve, reject) => {
+  public getLocation() {
+    return new Promise<GeolocationPosition>((resolve) => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((pos) => resolve(pos));
       } else {
@@ -39,10 +34,9 @@ export default class WeatherWidget {
     this.update();
   }
 
-  #handleLocationButton() {
-    this.getLocation().then((r) => {
-      this.connector.updateLocation(r as GeolocationPosition);
-      this.update();
-    });
+  private async handleLocationButton() {
+    const position = await this.getLocation();
+    this.connector.updateLocation(position);
+    this.update();
   }
 }

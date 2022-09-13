@@ -1,30 +1,30 @@
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
-var _WeatherWidget_instances, _WeatherWidget_handleLocationButton;
 import WeatherWidgetConnector from "./WeatherWidgetConnector.js";
 import WeatherWidgetLayout from "./WeatherWidgetLayout.js";
 export default class WeatherWidget {
     constructor(el) {
-        _WeatherWidget_instances.add(this);
-        this.layout = new WeatherWidgetLayout(el, () => __classPrivateFieldGet(this, _WeatherWidget_instances, "m", _WeatherWidget_handleLocationButton).call(this));
         this.connector = new WeatherWidgetConnector();
-        this.connector.loadWeatherData().then((data) => {
-            this.layout.setLoaderState(false);
-            this.layout.setData(data);
-        });
+        this.layout = new WeatherWidgetLayout(el, () => this.handleLocationButton());
+        this.update();
     }
     update() {
-        this.layout.setLoaderState(true);
-        this.connector.loadWeatherData().then((data) => {
-            this.layout.setData(data);
-            this.layout.setLoaderState(false);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.layout.showLoader();
+            const weatherData = yield this.connector.loadWeatherData();
+            this.layout.setData(weatherData);
+            this.layout.hideLoader();
         });
     }
     getLocation() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((pos) => resolve(pos));
             }
@@ -37,10 +37,11 @@ export default class WeatherWidget {
         this.connector.setCity(cityName);
         this.update();
     }
+    handleLocationButton() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const position = yield this.getLocation();
+            this.connector.updateLocation(position);
+            this.update();
+        });
+    }
 }
-_WeatherWidget_instances = new WeakSet(), _WeatherWidget_handleLocationButton = function _WeatherWidget_handleLocationButton() {
-    this.getLocation().then((r) => {
-        this.connector.updateLocation(r);
-        this.update();
-    });
-};

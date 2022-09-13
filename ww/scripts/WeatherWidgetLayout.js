@@ -1,11 +1,11 @@
 import { convertHPaToMmHg, getXYFromDeg, roundToSpaces } from "./utils.js";
 export default class WeatherWidgetLayout {
     constructor(mainEl, buttonLocationHandler) {
+        this.WIND_SPEED_MULTIPLIER = 1000;
         this.mainEl = mainEl;
         this.initLayout();
         this.graphixElements = this.getGraphixElements();
         this.dataElements = this.getDataElements();
-        console.log(this.dataElements);
         this.init(buttonLocationHandler);
     }
     init(handler) {
@@ -27,8 +27,6 @@ export default class WeatherWidgetLayout {
         };
     }
     getDataElements() {
-        // console.log(this.mainEl.querySelector("#weather-value-temp"));
-        // console.log(document.querySelector("#weather-value-temp"));
         return {
             temp: this.mainEl.querySelector("#weather-value-temp"),
             tempFeelsLike: this.mainEl.querySelector("#weather-value-feels"),
@@ -78,50 +76,55 @@ export default class WeatherWidgetLayout {
     </div>`;
         this.mainEl.innerHTML = base;
     }
+    showLoader() {
+        this.setLoaderState(true);
+    }
+    hideLoader() {
+        this.setLoaderState(false);
+    }
     setLoaderState(isLoading) {
         if (this.graphixElements.loader) {
             this.graphixElements.loader.style.opacity = isLoading ? "1" : "0";
         }
     }
+    setElementText(name, value) {
+        const key = name;
+        if (this.dataElements[key] !== null) {
+            this.dataElements[key].innerText = value.toString();
+        }
+    }
     setData(responseData) {
-        // console.log(this.dataElements);
-        // console.log(this.graphixElements);
-        const setElementText = (name, value) => {
-            const key = name;
-            console.log(this.dataElements[key], key);
-            if (this.dataElements[key] !== null) {
-                // console.log(value);
-                this.dataElements[key].innerText = value;
-            }
-        };
-        console.log(responseData);
-        setElementText("humidity", responseData.main.humidity.toString());
-        setElementText("temp", Math.round(responseData.main.temp).toString());
-        setElementText("pressure", convertHPaToMmHg(responseData.main.pressure).toString());
-        setElementText("tempFeelsLike", Math.round(responseData.main.feels_like).toString());
-        setElementText("cityName", responseData.name);
-        this.setWind(responseData.wind.deg, responseData.wind.speed);
-        this.setIco(responseData.weather[0].icon);
         const windSpeed = responseData.wind.speed > 1
             ? Math.round(responseData.wind.speed)
-            : Math.round(responseData.wind.speed * 10) / 10;
-        setElementText("windSpeed", windSpeed.toString());
+            : roundToSpaces(responseData.wind.speed, 1);
+        const pressure = convertHPaToMmHg(responseData.main.pressure);
+        const tempFeelsLike = Math.round(responseData.main.feels_like);
+        this.setElementText("humidity", responseData.main.humidity);
+        this.setElementText("temp", Math.round(responseData.main.temp));
+        this.setElementText("pressure", pressure);
+        this.setElementText("tempFeelsLike", tempFeelsLike);
+        this.setElementText("cityName", responseData.name);
+        this.setElementText("windSpeed", windSpeed);
+        this.setWind(responseData.wind.deg, responseData.wind.speed);
+        this.setIco(responseData.weather[0].icon);
     }
     setWind(deg, stength) {
-        const [x, y] = this.calcWindVectors(deg).map((v) => v * 1000 * stength);
+        const [x, y] = this.getWindVectorProjections(deg).map((vectorProjection) => vectorProjection * stength * this.WIND_SPEED_MULTIPLIER);
         this.setWindCloudSpeed(-x, y);
         if (this.graphixElements.arrow)
             this.graphixElements.arrow.style.transform = `rotate(${deg}deg)`;
     }
-    setIco(code) {
+    setIco(imageCode) {
+        const path = `http://openweathermap.org/img/wn/${imageCode}@2x.png`;
         if (this.graphixElements.ico)
-            this.graphixElements.ico.src = `http://openweathermap.org/img/wn/${code}@2x.png`;
+            this.graphixElements.ico.src = path;
     }
     setWindCloudSpeed(x, y) {
-        document.documentElement.style.setProperty("--weather-widget-windspeed-x", x + "px");
-        document.documentElement.style.setProperty("--weather-widget-windspeed-y", y + "px");
+        const varTemplate = "--weather-widget-windspeed-";
+        document.documentElement.style.setProperty(varTemplate + "x", x + "px");
+        document.documentElement.style.setProperty(varTemplate + "y", y + "px");
     }
-    calcWindVectors(deg) {
+    getWindVectorProjections(deg) {
         const [x, y] = getXYFromDeg(deg);
         return [roundToSpaces(x, 2), roundToSpaces(y, 2)];
     }

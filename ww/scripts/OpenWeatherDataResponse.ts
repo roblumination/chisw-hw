@@ -1,4 +1,4 @@
-export default interface IOpenWeatherDataResponse {
+export default interface OpenWeatherDataResponse {
   coord: {
     lat: number;
     lon: number;

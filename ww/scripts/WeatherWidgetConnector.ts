@@ -1,25 +1,22 @@
-import IOpenWeatherDataResponse from "./IOpenWeatherDataResponse.js";
+import OpenWeatherDataResponse from "./OpenWeatherDataResponse.js";
 const OpenWeatherAPIKey: string = "4322a85eea73487e8dcc8898fada9876";
 
 interface IQueryParams {
   apiKey: string;
-  coord: [number, number];
-  lang: string;
+  coord: number[];
+  language: string;
   city?: string;
 }
 
 export default class WeatherWidgetConnector {
-  queryParam: IQueryParams;
+  readonly DEFAULT_LOCATION = [50.4333, 30.5167];
+  queryParam: IQueryParams = {
+    apiKey: OpenWeatherAPIKey,
+    coord: this.DEFAULT_LOCATION,
+    language: "ua",
+  };
 
-  constructor() {
-    this.queryParam = {
-      apiKey: OpenWeatherAPIKey,
-      coord: [50.4333, 30.5167],
-      lang: "ua",
-    };
-  }
-
-  public loadWeatherData(): Promise<IOpenWeatherDataResponse> {
+  public loadWeatherData(): Promise<OpenWeatherDataResponse> {
     return new Promise((resolve, reject) => {
       fetch(this.getRequestLine())
         .then((response) => response.json())
@@ -50,7 +47,7 @@ export default class WeatherWidgetConnector {
       this.queryParam.city == null ? "" : `q=${this.queryParam.city}`,
       `appid=${this.queryParam.apiKey}`,
       "units=metric",
-      `lang=${this.queryParam.lang}`,
+      `lang=${this.queryParam.language}`,
     ];
     return base + "?" + query.join("&");
   }

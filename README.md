@@ -1,5 +1,11 @@
 # HOMEWORK
 
-## Where can i find your code?
+1. Create your own implementation of Promise that works the same as internal one, including all methods.
+2. Create your own implementation of async-await using generators.
 
-Please search in branches.
+## Files
+
+1. `Kliatva.js` - implementation of JS Promise.
+2. `async_generator.js` - implementation of _async/await_ with generator.
+
+Also explore other branches if it exist.

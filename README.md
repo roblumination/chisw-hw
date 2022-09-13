@@ -1,5 +1,5 @@
 # HOMEWORK
 
-## Where can i find your code?
+## Weather widget
 
-Please search in branches.
+Click on _"detect"_ button to change city on yours.

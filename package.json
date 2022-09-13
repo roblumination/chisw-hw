@@ -1,0 +1,25 @@
+{
+  "name": "hw",
+  "version": "1.0.0",
+  "description": "## Weather widget",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compress-assets" : "npx svgo -f ./ww/assets/ -o ./ww/assets"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roblumination/chisw-hw.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/roblumination/chisw-hw/issues"
+  },
+  "homepage": "https://github.com/roblumination/chisw-hw#readme",
+  "devDependencies": {
+    "svgo": "^2.8.0",
+    "typescript": "^4.8.3"
+  }
+}

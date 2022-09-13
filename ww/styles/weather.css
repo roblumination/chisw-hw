@@ -1,0 +1,165 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap");
+:root {
+  --weather-widget-windspeed-x: 100px;
+  --weather-widget-windspeed-y: 100px;
+}
+
+.ww {
+  width: 400px;
+  height: 200px;
+  border-radius: 10px;
+  display: flex;
+  font-family: Manrope;
+  position: relative;
+  font-size: 16px;
+  overflow: hidden;
+  color: #49484a;
+  background-color: #fff;
+  outline: 1px solid #aaa;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+.ww * {
+  font-family: Manrope;
+}
+.ww__loader {
+  position: absolute;
+  transition: opacity 0.5s;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  z-index: 2000;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ww__section {
+  width: 50%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.ww__section * {
+  box-sizing: border-box;
+}
+.ww__section .ww__temp {
+  margin-top: -20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ww__section .ww__temp__ico {
+  width: 100px;
+  height: 100px;
+}
+.ww__section .ww__temp__value {
+  margin-top: -30px;
+  font-size: 48px;
+}
+.ww__section .ww__temp__feels {
+  font-size: 12px;
+  text-transform: uppercase;
+  opacity: 50%;
+}
+.ww__section .ww__city {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+.ww__section .ww__city__change {
+  background-color: #eee;
+  border: 0px;
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none;
+}
+.ww__section .ww__city__change:hover {
+  background-color: rgba(236, 110, 76, 0.5);
+}
+.ww__section .ww__city__change:active {
+  background-color: #ec6e4c;
+  color: #fff;
+}
+.ww__section .ww__data {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-column-gap: 10px;
+  grid-row-gap: 0px;
+  padding-bottom: 10px;
+}
+.ww__section .ww__data > *:nth-child(odd) {
+  text-align: right;
+  font-weight: bold;
+}
+.ww__section .ww__graph {
+  margin: 0 -10px;
+  margin-bottom: -10px;
+  flex-grow: 1;
+  position: relative;
+  background: rgba(136, 136, 136, 0.1333333333) url("../assets/grid.svg");
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ww__section .ww__graph__cloud {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+.ww__section .ww__graph__cloud1 {
+  background: url("../assets/clouds_L.svg");
+  animation: clouds-move 70s infinite linear;
+}
+.ww__section .ww__graph__cloud2 {
+  background: url("../assets/clouds_D.svg");
+  animation: clouds-move 100s infinite linear;
+}
+.ww__section .ww__graph__cloudM {
+  background: url("../assets/clouds_M.svg");
+  animation: clouds-move 85s infinite linear;
+}
+.ww__section .ww__graph__cloudT {
+  background: url("../assets/clouds_T.svg");
+  animation: clouds-move 60s infinite linear;
+}
+.ww__section .ww__graph__nswe {
+  position: relative;
+  z-index: 1000;
+  width: 100px;
+  height: 100px;
+  background: url("../assets/nwse.svg");
+}
+.ww__section .ww__graph__nswe__arrow {
+  width: 100px;
+  height: 100px;
+  z-index: 1500;
+  transform: rotate(-45deg);
+  transition: transform 0.5s;
+  background: url("../assets/arrow.svg");
+}
+.ww__section .ww__graph__nswe__bg {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgba(236, 110, 76, 0.05);
+}
+.ww__left {
+  justify-content: center;
+  gap: 10px;
+}
+.ww__right {
+  background-color: #f8f8f8;
+}
+
+@keyframes clouds-move {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: var(--weather-widget-windspeed-x) var(--weather-widget-windspeed-y);
+  }
+}

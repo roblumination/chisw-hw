@@ -1,0 +1,188 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap");
+
+$accent: #ec6e4c;
+
+:root {
+  --weather-widget-windspeed-x: 100px;
+  --weather-widget-windspeed-y: 100px;
+}
+
+.ww {
+  width: 400px;
+  height: 200px;
+  border-radius: 10px;
+
+  display: flex;
+  font-family: Manrope;
+  position: relative;
+  font-size: 16px;
+  overflow: hidden;
+  color: #49484a;
+  & * {
+    font-family: Manrope;
+  }
+
+  background-color: #fff;
+  outline: 1px solid #aaa;
+  box-shadow: 0 0 5px #0003, 0 5px 10px #0003;
+
+  &__loader {
+    position: absolute;
+    transition: opacity 0.5s;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    // background-color: rgba($accent, 70%);
+    background-color: #fff;
+    z-index: 2000;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__section {
+    width: 50%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    & * {
+      box-sizing: border-box;
+    }
+    .ww {
+      &__temp {
+        margin-top: -20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        &__ico {
+          width: 100px;
+          height: 100px;
+        }
+        &__value {
+          margin-top: -30px;
+          font-size: 48px;
+        }
+        &__feels {
+          font-size: 12px;
+          text-transform: uppercase;
+          opacity: 50%;
+        }
+      }
+      &__city {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        &__name {
+        }
+        &__change {
+          background-color: #eee;
+          border: 0px;
+          border-radius: 5px;
+          cursor: pointer;
+          user-select: none;
+          &:hover {
+            background-color: rgba($accent, 50%);
+          }
+          &:active {
+            background-color: $accent;
+            color: #fff;
+          }
+        }
+      }
+      &__data {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        grid-column-gap: 10px;
+        grid-row-gap: 0px;
+        padding-bottom: 10px;
+
+        & > *:nth-child(odd) {
+          text-align: right;
+          font-weight: bold;
+        }
+      }
+      &__graph {
+        margin: 0 -10px;
+        margin-bottom: -10px;
+        flex-grow: 1;
+        position: relative;
+        background: #8882 url("../assets/grid.svg");
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &__cloud {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          z-index: 0;
+
+          &1 {
+            background: url("../assets/clouds_L.svg");
+            animation: clouds-move 70s infinite linear;
+          }
+
+          &2 {
+            background: url("../assets/clouds_D.svg");
+            animation: clouds-move 100s infinite linear;
+          }
+
+          &M {
+            background: url("../assets/clouds_M.svg");
+            animation: clouds-move 85s infinite linear;
+          }
+
+          &T {
+            background: url("../assets/clouds_T.svg");
+            animation: clouds-move 60s infinite linear;
+          }
+        }
+
+        &__nswe {
+          position: relative;
+          z-index: 1000;
+          width: 100px;
+          height: 100px;
+          background: url("../assets/nwse.svg");
+
+          &__arrow {
+            width: 100px;
+            height: 100px;
+            z-index: 1500;
+            transform: rotate(-45deg);
+            transition: transform 0.5s;
+
+            background: url("../assets/arrow.svg");
+          }
+
+          &__bg {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba($accent, 5%);
+          }
+        }
+      }
+    }
+  }
+  &__left {
+    justify-content: center;
+    gap: 10px;
+  }
+  &__right {
+    background-color: #f8f8f8;
+  }
+}
+
+@keyframes clouds-move {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: var(--weather-widget-windspeed-x)
+      var(--weather-widget-windspeed-y);
+  }
+}
